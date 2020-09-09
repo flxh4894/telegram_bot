@@ -14,7 +14,7 @@ import java.util.List;
 public class SSGCrawler {
 
     public List<String> getItemInfo(String item, String minPrc, String maxPrc){
-        // 신세계 긁어오기
+
         List<String > list = new ArrayList<>();
         try {
 

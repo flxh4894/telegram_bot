@@ -1,37 +1,60 @@
 package com.example.telegram.telegram_bot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Component
 public class MyTelegramHandler extends TelegramLongPollingBot {
 
-    SSGCrawler ssgCrawler = new SSGCrawler();
+    SSGCrawler ssgCrawler;
+    Crawler crawler;
+    public MyTelegramHandler(SSGCrawler ssgCrawler, Crawler crawler){
+        this.ssgCrawler = ssgCrawler;
+        this.crawler = crawler;
+    }
+
+    private static final Logger logger = LoggerFactory.getLogger(MyTelegramHandler.class);
+
+    @Value("${bot.token}")
+    private String token;
+
+    @Value("${bot.username}")
+    private String username;
+
+    @Override
+    public String getBotToken() {
+        return token;
+    }
+
+    @Override
+    public String getBotUsername() {
+        return username;
+    }
 
     @Override
     public void onUpdateReceived(Update update) {
-        System.out.println(update.getMessage().getText());
-        System.out.println(update.getMessage().getChatId());
 
-        Crawler crawler = new Crawler();
-        //List<String> list = crawler.URLInfo();
+        System.out.println(crawler.URLInfo());
 
         String msg = update.getMessage().getText();
         String min = "";
         String max = "";
 
         String[] item = msg.split("ㅡ");
+
+        //최소, 최대 입력 없을 시 추가
         if(item.length == 3){
             min = item[1];
             max = item[2];
-        } else if(item.length == 1){
-
-        } else {
-
         }
 
         // SSG 상품검색
@@ -55,13 +78,9 @@ public class MyTelegramHandler extends TelegramLongPollingBot {
 
     }
 
-    @Override
-    public String getBotUsername() {
-        return "plovelyBot";
+    @PostConstruct
+    public void start() {
+        logger.info("username: {}, token: {}", username, token);
     }
 
-    @Override
-    public String getBotToken() {
-        return "1132709981:AAEVzFP079An7ica_ZM7Cg5JKm3T88-oa1I";
-    }
 }
