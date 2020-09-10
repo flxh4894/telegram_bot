@@ -43,31 +43,42 @@ public class MyTelegramHandler extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
 
-        System.out.println(crawler.URLInfo());
 
-        String msg = update.getMessage().getText();
+
+        String getMsg = update.getMessage().getText();
+        String message = "";
         String min = "";
         String max = "";
+        boolean flag = true;
 
-        String[] item = msg.split("ㅡ");
-
+        String[] item = getMsg.split("ㅡ");
         //최소, 최대 입력 없을 시 추가
         if(item.length == 3){
             min = item[1];
             max = item[2];
+        } else if (item.length != 1 ){
+            message = "정확한 형태로 입력해 주세요. \n -입력형태1 : 검색어ㅡ최소가격ㅡ최대가격 \n " +
+                    "-입력형태2 : 검색어";
+            flag = false;
         }
 
-        // SSG 상품검색
-        List<String> list;
-        list = ssgCrawler.getItemInfo(item[0],min,max);
-
-        StringBuffer stringBuffer = new StringBuffer(list.toString());
-        stringBuffer.deleteCharAt(0);
-        stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+        if(flag){
+            // SSG 상품검색
+            List<String> list;
+            list = ssgCrawler.getItemInfo(item[0],min,max);
+            if(list.size() == 0){
+                message = "검색 결과가 존재하지 않습니다 ㅠㅠ...";
+            } else {
+                StringBuffer stringBuffer = new StringBuffer(list.toString());
+                stringBuffer.deleteCharAt(0);
+                stringBuffer.deleteCharAt(stringBuffer.length() - 1);
+                message = stringBuffer.toString();
+            }
+        }
 
         SendMessage req = new SendMessage();
         req.setChatId(update.getMessage().getChatId());
-        req.setText(stringBuffer.toString());
+        req.setText(message);
         req.enableMarkdown(true);
 
         try {
