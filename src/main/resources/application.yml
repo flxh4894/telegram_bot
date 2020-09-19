@@ -1,3 +1,21 @@
+#HikariCp 설정
+spring:
+  datasource:
+    password: dowon
+    username: dowon
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: jdbc:mariadb://localhost:3306/test
+
 bot:
   token: 1132709981:AAEVzFP079An7ica_ZM7Cg5JKm3T88-oa1I
   username: plovelyBot
+
+word:
+  search: 검색으로 추가 😊
+  addr: 주소로 추가 🏠
+  alarm: 알림등록 ⭕
+  alarmDel: 알림삭제 ❌
+  home: 처음으로 돌아가기 🛠
+
+
+

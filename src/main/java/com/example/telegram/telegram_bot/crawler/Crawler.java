@@ -1,4 +1,4 @@
-package com.example.telegram.telegram_bot;
+package com.example.telegram.telegram_bot.crawler;
 
 import org.json.JSONObject;
 import org.jsoup.Connection;
